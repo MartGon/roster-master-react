@@ -6,10 +6,11 @@
   border-style: solid;
 }
 
-.player_slot p{
+.player_slot input{
   padding-left: 4px;
   text-align: left;
   height: inherit;
+  width: 100%;
   font-size: 14px;
 }
 

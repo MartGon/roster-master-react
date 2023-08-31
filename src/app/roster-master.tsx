@@ -1,4 +1,7 @@
+"use client"
+
 import styles from './page.module.css'
+import { useState } from 'react';
 
 export class PlayerProps{
     player_class : string;
@@ -14,7 +17,7 @@ export function Player({ player_class, name } : PlayerProps){
     return (
         <div className={styles.player_slot}>
             <div className={styles[player_class]}> 
-                <p className={styles[player_class]}>{name}</p>
+                <input className={styles[player_class]} defaultValue={name}/>
             </div>
         </div>
     )
@@ -24,7 +27,7 @@ export function Group({grp_number, players} : {grp_number : number, players : Ar
 
     const grp =  players.map((player, index) =>{
         return (
-            <Player player_class={player.player_class} name={player.name}/>
+            <Player key={index} player_class={player.player_class} name={player.name}/>
         );
     });
 
@@ -40,32 +43,68 @@ export function Group({grp_number, players} : {grp_number : number, players : Ar
     )
 }
 
-export default function Raid(){
+export class RaidProps{
+    title: string;
+    groups: Array<Array<PlayerProps>>;
 
-    const grp1 = [
-        new PlayerProps("death_knight", "Smegknight"),
-        new PlayerProps("druid", "Npok"),
-        new PlayerProps("hunter", "Paletyam"),
-        new PlayerProps("mage", "Gareth"),
-        new PlayerProps("paladin", "Aelzara")
-    ];
-    const grp2 = [
-        new PlayerProps("priest", "Reiyna"),
-        new PlayerProps("rogue", "Endless"),
-        new PlayerProps("shaman", "Gida"),
-        new PlayerProps("warlock", "Exhumation"),
-        new PlayerProps("warrior", "Ragnaorc")
-    ]
+    constructor(title: string, groups: Array<Array<PlayerProps>>){
+        this.title = title;
+        this.groups = groups
+    }
+}
+
+export function Raid({raid} : {raid: RaidProps}){
+
+    const grps = raid.groups.map((group, index) =>{
+
+        return (
+            <Group key={index} grp_number={Number(index + 1)} players={group}/>
+        )
+    });
 
     return (
         <>
             <div className={styles.raid}>
                 <div className={styles.raid_header}>
-                    <p>Raid 1 - Thursday 19:45</p>
+                    <p>{raid.title}</p>
                 </div>
-                <Group grp_number={Number(1)} players={grp1}/>
-                <Group grp_number={Number(2)} players={grp2}/>
+                {grps}
             </div>
+        </>
+    )
+}
+
+export default function Rosters(){
+
+    let [raids, setRaids] = useState(Array<RaidProps>);
+    const prepRaids = [
+        new RaidProps("Raid 1 - Thursday 19:45", [
+            [
+                new PlayerProps("death_knight", "Smegknight"),
+                new PlayerProps("druid", "Npok"),
+                new PlayerProps("hunter", "Paletyam"),
+                new PlayerProps("mage", "Gareth"),
+                new PlayerProps("paladin", "Aelzara")
+            ],
+            [
+                new PlayerProps("priest", "Reiyna"),
+                new PlayerProps("rogue", "Endless"),
+                new PlayerProps("shaman", "Gida"),
+                new PlayerProps("warlock", "Exhumation"),
+                new PlayerProps("warrior", "Ragnaorc")
+            ]
+        ])
+    ]
+
+    const raidComps = prepRaids.map((raid, index) => {
+        return (
+            <Raid key={index} raid={raid}/>
+        )
+    });
+
+    return (
+        <>
+            {raidComps}
         </>
     )
 }

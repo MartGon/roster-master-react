@@ -1,13 +1,13 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-import Raid from './roster-master'
+import Rosters from './roster-master'
 import React, { StrictMode } from 'react'
 
 export default function Home() {
 
   return (
     <StrictMode>
-      <Raid/>
+      <Rosters/>
     </StrictMode>)
 }
 
