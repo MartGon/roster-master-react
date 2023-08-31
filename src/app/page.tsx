@@ -1,7 +1,18 @@
 import Image from 'next/image'
 import styles from './page.module.css'
+import Raid from './roster-master'
+import React, { StrictMode } from 'react'
 
 export default function Home() {
+
+  return (
+    <StrictMode>
+      <Raid/>
+    </StrictMode>)
+}
+
+export function OldHome() {
+
   return (
     <main className={styles.main}>
       <div className={styles.description}>

@@ -1,3 +1,102 @@
+.player_slot{
+  width: 120px;
+  height: 20px;
+  border: white;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.player_slot p{
+  padding-left: 4px;
+  text-align: left;
+  height: inherit;
+  font-size: 14px;
+}
+
+.death_knight{
+  background: #C41E3A;
+  color: white;
+  height: inherit;
+}
+
+.druid{
+  background: #FF7C0A;
+  color: white;
+  height: inherit;
+}
+
+.hunter{
+  background: #AAD372;
+  color: white;
+  height: inherit;
+}
+
+.mage{
+  background: #3FC7EB;
+  color: white;
+  height: inherit;
+}
+
+.paladin{
+  background: #F48CBA;
+  color: white;
+  height: inherit;
+}
+
+.priest{
+  background: white;
+  color: black;
+  height: inherit;
+}
+
+.rogue{
+  background: #FFF468;
+  color: black;
+  height: inherit;
+}
+
+.shaman{
+  background: #0070DD;
+  color: white;
+  height: inherit;
+}
+
+.warlock{
+  background: #8788EE;
+  color: white;
+  height: inherit;
+}
+
+.warrior{
+  background: #C69B6D;
+  color: white;
+  height: inherit;
+}
+
+.group{
+  display: inline-block;
+}
+
+.group_header{
+  background: black;
+  color: white;
+  text-align: center;
+}
+
+.raid{
+  display: table;
+}
+
+.raid_header{
+  text-align: center;
+}
+
+
+
+
+/* OLD STUFF*/
+
+
 .main {
   display: flex;
   flex-direction: column;
