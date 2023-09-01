@@ -1,9 +1,10 @@
 "use client"
 
-import next from 'next/types';
 import styles from './page.module.css'
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import React, { FocusEvent } from 'react';
+import { loadCharacterDB  } from './character_db';
+import { cloneDeep } from 'lodash';
 
 export class PlayerProps{
     player_class : string;
@@ -15,21 +16,32 @@ export class PlayerProps{
     }
 }
 
-export function Player({ player, onFocusOut } : {player: PlayerProps, onFocusOut: (e: FocusEvent<HTMLInputElement>) => void}){
+export function Player({ player, onFocusOut, r, g, p } : 
+    {
+        player: PlayerProps, 
+        onFocusOut: (e: FocusEvent<HTMLInputElement>, r : number, g : number, p : number) => void, 
+        r : number, g : number, p : number
+    }){
     return (
         <div className={styles.player_slot}>
             <div className={styles[player.player_class]}> 
-                <input type="text" className={styles[player.player_class]} defaultValue={player.name} onBlur={(e: FocusEvent<HTMLInputElement>) => onFocusOut(e)}/>
+                <input type="text" className={styles[player.player_class]} defaultValue={player.name} onBlur={(e: FocusEvent<HTMLInputElement>) => {onFocusOut(e, r, g, p)}}/>
             </div>
         </div>
     )
 }
 
-export function Group({grp_number, players, onFocusOut} : {grp_number : number, players : Array<PlayerProps>, onFocusOut: (e: FocusEvent<HTMLInputElement>) => void}){
+export function Group({grp_number, players, onFocusOut, raid_id} : 
+    {
+        grp_number : number, 
+        players : Array<PlayerProps>, 
+        onFocusOut: (e: FocusEvent<HTMLInputElement>, r : number, g : number, p : number) => void,
+        raid_id : number
+    }){
 
     const grp =  players.map((player, index) =>{
         return (
-            <Player key={index} player={player} onFocusOut={onFocusOut}/>
+            <Player key={index} player={player} onFocusOut={onFocusOut} r={raid_id} g={grp_number - 1} p={index}/>
         );
     });
 
@@ -55,12 +67,18 @@ export class RaidProps{
     }
 }
 
-export function Raid({raid, onFocusOut} : {raid: RaidProps, onFocusOut: (e: FocusEvent<HTMLInputElement>) => void}){
+export function Raid({raid, onFocusOut, raid_id} : 
+    {
+        raid: RaidProps, 
+        onFocusOut: (e: FocusEvent<HTMLInputElement>, 
+        p : number, g : number, r : number) => void,
+        raid_id : number,
+    }){
 
     const grps = raid.groups.map((group, index) =>{
 
         return (
-            <Group key={index} grp_number={Number(index + 1)} players={group} onFocusOut={onFocusOut}/>
+            <Group key={index} grp_number={Number(index + 1)} players={group} onFocusOut={onFocusOut} raid_id={raid_id}/>
         )
     });
 
@@ -95,28 +113,53 @@ export default function RosterMaster(){
         ]
     ]);
     let [raids, setRaids] = useState(Array<RaidProps>(1).fill(defaultRaid));
-    function onFocusOut(event: FocusEvent<HTMLInputElement>){
-        console.log("Left focus");
-        console.log(event.target.value);
-    }
-
-    const raidComps = raids.map((raid, index) => {
-        return (
-            <Raid key={index} raid={raid} onFocusOut={onFocusOut}/>
-        )
-    });
+    let [db, setDB] = useState(Object);
+    let [toggle, setToggle] = useState(false);
 
     function onAddRosterClick(){
         let nextRaids = [...raids, defaultRaid];
         setRaids(nextRaids);
     }
 
+    function onLoadFile(e: ChangeEvent<HTMLInputElement>){
+        if(e.target.files && e.target.files.length > 0)
+        {
+            let file = e.target.files[0];
+            file.text().then((val) =>{
+                const res = loadCharacterDB(val);    
+                setDB(res);
+            })
+        }
+    }
+
+    function onFocusOut(event: FocusEvent<HTMLInputElement>, raid_id : number, grp_id : number, player_id : number){
+        const name = event.target.value;
+        console.log(event.target.value);
+        console.log("Raid " + raid_id);
+        console.log("Group " + grp_id);
+        console.log("Player " + player_id);
+        
+        const nextRaids = cloneDeep(raids);
+        nextRaids[raid_id].groups[grp_id][player_id].player_class = db[name].class;
+        setRaids(nextRaids);
+        console.log("class: " + raids[raid_id].groups[grp_id][player_id].player_class);
+    }
+    
+    const raidComps = raids.map((raid, index) => {
+        return (
+            <Raid key={index} raid={raid} onFocusOut={onFocusOut} raid_id={index}/>
+        )
+    });
+
     return (
         <>
         <div className={styles.page_header}>
             <h1>Roster Master</h1>
             <div className={styles.button_holder}>
+                <label>Load Character DB</label>
+                <input type='file' accept='.csv' onChange={onLoadFile}></input>
                 <button onClick={onAddRosterClick}>Add Raid</button>
+                <button onClick={()=>{setToggle(!toggle)}}>Update State</button>
             </div>
         </div>
         <div className={styles.page_body}>
@@ -125,3 +168,4 @@ export default function RosterMaster(){
         </>
     )
 }
+
