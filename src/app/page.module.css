@@ -1,9 +1,30 @@
+
+/* Home page*/
+
+.page_header{
+  margin-bottom: 20px;
+}
+
+.page_header h1{
+  text-align: center;
+}
+
+.page_body{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.button_holder{
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+}
+
+/* Roster Master Components*/
+
 .player_slot{
   width: 120px;
   height: 20px;
-  border: white;
-  border-width: 1px;
-  border-style: solid;
 }
 
 .player_slot input{
@@ -12,6 +33,11 @@
   height: inherit;
   width: 100%;
   font-size: 14px;
+  border: none;
+}
+
+.player_slot input:focus{
+  outline: none;
 }
 
 .death_knight{
@@ -85,14 +111,30 @@
 }
 
 .raid{
-  display: table;
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 20px;
+
+  border: white;
+  border-width: 1px;
+  border-style: solid;
 }
 
 .raid_header{
   text-align: center;
 }
 
+.raid_header input{
+  width: 100%;
+  border: none;
+  text-align: center;
+  background-color: black;
+  font-size: 16px;
+}
 
+.raid_header input:focus{
+  outline: none;
+}
 
 
 /* OLD STUFF*/

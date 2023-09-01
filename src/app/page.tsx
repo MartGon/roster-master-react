@@ -1,14 +1,16 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-import Rosters from './roster-master'
+import RosterMaster from './roster-master'
 import React, { StrictMode } from 'react'
 
 export default function Home() {
-
   return (
-    <StrictMode>
-      <Rosters/>
-    </StrictMode>)
+    <>
+        <StrictMode>
+          <RosterMaster/>
+        </StrictMode>
+    </>
+    )
 }
 
 export function OldHome() {
