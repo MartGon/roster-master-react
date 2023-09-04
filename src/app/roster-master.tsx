@@ -25,8 +25,13 @@ export function Player({ player, onFocusOut, r, g, p } :
     }){
     return (
         <div className={styles.player_slot}>
-            <div className={styles[player.player_class]}> 
+            <div className={styles[player.player_class]}>
                 <input type="text" className={styles[player.player_class]} defaultValue={player.name} onBlur={(e: FocusEvent<HTMLInputElement>) => {onFocusOut(e, r, g, p)}}/>
+                <select name="cars" id="cars">
+                    <option value="dps">⚔️</option>
+                    <option value="heal">🚑</option>
+                    <option value="tank">🛡️</option>
+                </select>
             </div>
         </div>
     )
