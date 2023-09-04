@@ -4,7 +4,8 @@ import styles from './page.module.css'
 import { ChangeEvent, useState } from 'react';
 import React, { FocusEvent } from 'react';
 import { loadCharacterDB  } from './character_db';
-import { cloneDeep } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
+import next from 'next/types';
 
 export class PlayerProps{
     player_class : string;
@@ -31,17 +32,17 @@ export function Player({ player, onFocusOut, r, g, p } :
     )
 }
 
-export function Group({grp_number, players, onFocusOut, raid_id} : 
+export function Group({grp_number, players, onFocusOut, raid_index} : 
     {
         grp_number : number, 
         players : Array<PlayerProps>, 
         onFocusOut: (e: FocusEvent<HTMLInputElement>, r : number, g : number, p : number) => void,
-        raid_id : number
+        raid_index : number
     }){
 
     const grp =  players.map((player, index) =>{
         return (
-            <Player key={index} player={player} onFocusOut={onFocusOut} r={raid_id} g={grp_number - 1} p={index}/>
+            <Player key={index} player={player} onFocusOut={onFocusOut} r={raid_index} g={grp_number - 1} p={index}/>
         );
     });
 
@@ -58,27 +59,30 @@ export function Group({grp_number, players, onFocusOut, raid_id} :
 }
 
 export class RaidProps{
+    id: number;
     title: string;
     groups: Array<Array<PlayerProps>>;
 
-    constructor(title: string, groups: Array<Array<PlayerProps>>){
+    constructor(id :number, title: string, groups: Array<Array<PlayerProps>>){
+        this.id = id;
         this.title = title;
-        this.groups = groups
+        this.groups = groups;
     }
 }
 
-export function Raid({raid, onFocusOut, raid_id} : 
+export function Raid({raid, onFocusOut, onClickCross, onClickPlus, raid_index} : 
     {
         raid: RaidProps, 
-        onFocusOut: (e: FocusEvent<HTMLInputElement>, 
-        p : number, g : number, r : number) => void,
-        raid_id : number,
+        onFocusOut: (e: FocusEvent<HTMLInputElement>, p : number, g : number, r : number) => void,
+        onClickCross: () => void,
+        onClickPlus: () => void,
+        raid_index : number,
     }){
 
     const grps = raid.groups.map((group, index) =>{
 
         return (
-            <Group key={index} grp_number={Number(index + 1)} players={group} onFocusOut={onFocusOut} raid_id={raid_id}/>
+            <Group key={index} grp_number={Number(index + 1)} players={group} onFocusOut={onFocusOut} raid_index={raid_index}/>
         )
     });
 
@@ -86,6 +90,10 @@ export function Raid({raid, onFocusOut, raid_id} :
         <>
             <div className={styles.raid}>
                 <div className={styles.raid_header}>
+                    <div className={styles.raid_toolbox}>
+                        <button className={styles.raid_toolbox_button} onClick={onClickPlus}>+</button>
+                        <button className={styles.raid_toolbox_button} onClick={onClickCross}>x</button>
+                    </div>
                     <input type="text" defaultValue={raid.title}/>
                 </div>
                 {grps}
@@ -96,7 +104,8 @@ export function Raid({raid, onFocusOut, raid_id} :
 
 export default function RosterMaster(){
 
-    const defaultRaid = new RaidProps("Raid 1 - Thursday 19:45", [
+    const defaultGroup = Array(5).fill(0).map(u => (new PlayerProps("priest", "")));
+    const defaultRaid = new RaidProps(0, "Raid 1 - Thursday 19:45", [
         [
             new PlayerProps("death_knight", "Smegknight"),
             new PlayerProps("druid", "Npok"),
@@ -114,10 +123,14 @@ export default function RosterMaster(){
     ]);
     let [raids, setRaids] = useState(Array<RaidProps>(1).fill(defaultRaid));
     let [db, setDB] = useState(Object);
+    let [nextRaidId, setNextRaidId] = useState(1);
 
     function onAddRosterClick(){
-        let nextRaids = [...raids, defaultRaid];
+        let nextRaid = cloneDeep(defaultRaid);
+        nextRaid.id = nextRaidId;
+        let nextRaids = [...raids, nextRaid];
         setRaids(nextRaids);
+        setNextRaidId(nextRaidId + 1)
     }
 
     function onLoadFile(e: ChangeEvent<HTMLInputElement>){
@@ -131,28 +144,50 @@ export default function RosterMaster(){
         }
     }
 
-    function onFocusOut(event: FocusEvent<HTMLInputElement>, raid_id : number, grp_id : number, player_id : number){
+    function onFocusOut(event: FocusEvent<HTMLInputElement>, raid_index : number, grp_id : number, player_id : number){
         const name = event.target.value;
         console.log(event.target.value);
-        console.log("Raid " + raid_id);
+        console.log("Raid " + raid_index);
         console.log("Group " + grp_id);
         console.log("Player " + player_id);
         
-        const nextRaids = cloneDeep(raids);
+        let nextRaids = cloneDeep(raids);
         const entry = db[name];
         if(entry){
-            nextRaids[raid_id].groups[grp_id][player_id].player_class = db[name].class;
+            let raid = nextRaids[raid_index];
+            let group = raid.groups[grp_id];
+            group[player_id].player_class = db[name].class;
+            group[player_id].name = name;
             setRaids(nextRaids);
-            console.log("class: " + raids[raid_id].groups[grp_id][player_id].player_class);
         }
         else{
             console.log("Not found!");
         }
     }
+
+    function onClickCross(raid_index : number){
+        let nextRaids = cloneDeep(raids);
+        nextRaids.splice(raid_index, 1);
+        setRaids(nextRaids);
+        console.log("Removing raid " + raid_index);
+    }
+
+    function onClickPlus(raid_index : number){
+        if (raids[raid_index].groups.length < 5){
+            let nextRaids = cloneDeep(raids);
+            let raid = nextRaids[raid_index];
+            raid.groups.push(defaultGroup);
+            setRaids(nextRaids);
+        }
+    }
     
     const raidComps = raids.map((raid, index) => {
         return (
-            <Raid key={index} raid={raid} onFocusOut={onFocusOut} raid_id={index}/>
+            <Raid key={raid.id} raid_index={index} raid={raid} 
+                onFocusOut={onFocusOut} 
+                onClickCross={() => {onClickCross(index)}} 
+                onClickPlus={() => {onClickPlus(index)}}
+            />
         )
     });
 

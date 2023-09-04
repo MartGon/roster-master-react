@@ -108,6 +108,7 @@
   background: black;
   color: white;
   text-align: center;
+  height: 20px;
 }
 
 .raid{
@@ -130,10 +131,28 @@
   text-align: center;
   background-color: black;
   font-size: 16px;
+  height: 20px;
 }
 
 .raid_header input:focus{
   outline: none;
+}
+
+.raid_toolbox{
+  background-color: black;
+  height: 10px;
+  text-align: right;
+  vertical-align: top;
+}
+
+.raid_toolbox_button{
+  height: 10px;
+  width: 10px;
+  font-size: 8px;
+  text-align: center;
+  vertical-align: top;
+  line-height: 2px;
+  padding-bottom: 2px;
 }
 
 
