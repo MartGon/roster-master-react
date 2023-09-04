@@ -114,7 +114,6 @@ export default function RosterMaster(){
     ]);
     let [raids, setRaids] = useState(Array<RaidProps>(1).fill(defaultRaid));
     let [db, setDB] = useState(Object);
-    let [toggle, setToggle] = useState(false);
 
     function onAddRosterClick(){
         let nextRaids = [...raids, defaultRaid];
@@ -140,9 +139,15 @@ export default function RosterMaster(){
         console.log("Player " + player_id);
         
         const nextRaids = cloneDeep(raids);
-        nextRaids[raid_id].groups[grp_id][player_id].player_class = db[name].class;
-        setRaids(nextRaids);
-        console.log("class: " + raids[raid_id].groups[grp_id][player_id].player_class);
+        const entry = db[name];
+        if(entry){
+            nextRaids[raid_id].groups[grp_id][player_id].player_class = db[name].class;
+            setRaids(nextRaids);
+            console.log("class: " + raids[raid_id].groups[grp_id][player_id].player_class);
+        }
+        else{
+            console.log("Not found!");
+        }
     }
     
     const raidComps = raids.map((raid, index) => {
@@ -159,7 +164,6 @@ export default function RosterMaster(){
                 <label>Load Character DB</label>
                 <input type='file' accept='.csv' onChange={onLoadFile}></input>
                 <button onClick={onAddRosterClick}>Add Raid</button>
-                <button onClick={()=>{setToggle(!toggle)}}>Update State</button>
             </div>
         </div>
         <div className={styles.page_body}>
