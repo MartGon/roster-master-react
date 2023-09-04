@@ -111,6 +111,27 @@
   height: 20px;
 }
 
+.group_header p{
+  display: inline-block;
+  width: 100px;
+  padding-left: 20px;
+}
+
+.group_toolbox{
+  display: inline-block;
+  text-align: right;
+  width: 20px;
+}
+
+.group_toolbox_button{
+  width: 10px;
+  height: 10px;
+  font-size: 8px;
+  padding-bottom: 2px;
+  line-height: 2px;
+  vertical-align: top;
+}
+
 .raid{
   display: inline-block;
   margin-right: 20px;
