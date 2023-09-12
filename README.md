@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# roster-master-react
 
-## Getting Started
+## Description
 
-First, run the development server:
+**roster-master-react** is the ReactJS front-end implementation of [RosterMaster](https://github.com/MartGon/RosterMaster). This project is a work in progress that attempts to remove the need to use Google Sheets to manually create the rosters, and work as fully-featured user interface for the whole application.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+![sample-roster.png](https://raw.githubusercontent.com/MartGon/roster-master-react/main/docs/imgs/roster-master.png)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How to use
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+At the moment, the project implements the following features:
+- Add/Remove raid rosters.
+- Add/Remove groups in each of the raids.
+- Link a **characters-db.csv** to automatically switch the player's class color when a specific name is typed.
+- Set player roles.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Future work
 
-## Learn More
+The first version of this project would be considered complete, once the following features are finally implemented:
 
-To learn more about Next.js, take a look at the following resources:
+- Drag and drop feature for players. So typing their names is not needed to move them around between raids or groups.
+- Check rosters' validity. By donig a resquest to a server runnnig RosterMaster, check whether the rosters made are valid.
+- Display errors. After a check, errors could be displayed in a Pop up window next to each roster to  get more information about the error.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## About
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+My first project using ReactJS.
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
